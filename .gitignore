@@ -1,0 +1,6 @@
+.cache/*
+uploads/*
+*.pyc
+__pycache__/*
+*/__pycache__/*
+.ropeproject/*

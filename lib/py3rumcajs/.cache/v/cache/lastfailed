@@ -1,0 +1,5 @@
+{
+  "tests/app_config/test_config.py": true,
+  "tests/helpers/test_file_processing.py": true,
+  "tests/test_a.py": true
+}
