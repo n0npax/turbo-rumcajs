@@ -1,0 +1,9 @@
+<button type="button" onclick="sendDeleteReq()">Delete</button>
+<script>
+function sendDeleteReq() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("DELETE", "", false);
+  xhttp.send();
+  window.location.reload();
+}
+</script>
