@@ -53,6 +53,8 @@ def parse_to_dict(filename):
                 break
                 content_header.append(line)
         data = list(OrderedSet(data))
+        data = [{'x': _[0], 'y': _[1]} for _ in data]
+        data = cut_half_if_need(data)
 
     for line in content_header:
         match = re.search('X\s+Unit:\s+([\w\?]+)', line)
@@ -70,14 +72,23 @@ def parse_to_dict(filename):
             x_prefix = match.group(2)
             y_prefix = match.group(1)
 
-    return {'name': filename,
+    return {'name': filename.split('/')[-1],
             'x_prefix': x_prefix,
             'y_prefix': y_prefix,
             'data': data}
 
 
 def rescale_data(data, prefix):
-    pass
+    # TODO
+    return data
 
 
+def cut_half_if_need(data):
+    middle_point = data[int(len(data)/2)]
+    begin_point = data[0]
+    end_point = data[-1]
+    if end_point['y'] < middle_point['y'] > begin_point['y']:
+        return data[:int(len(data)/2)]
+    else:
+        return data
 

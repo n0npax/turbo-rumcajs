@@ -1,0 +1,117 @@
+<head>
+    <meta charset="utf-8" />
+   <script src='/static/js/chart.js/dist/Chart.js'></script>
+   <script src='/static/js/chartjs-plugin-zoom/chartjs-plugin-zoom.js'></script>
+
+
+</head>
+  <body>
+    <div class="container">
+      <div class="header">
+          {% include 'flashes.html' %}
+        <h3 class="text-muted">Graph</h3>
+      </div>
+      <div>
+        {% for file in filenames %}                                                          
+        <li><a href="{{url_for('graph', filename=file)}}">{{file}}</a></li>                           
+        {% endfor %}
+      </div>
+
+      {% if data %}
+
+<div id="parent">
+<canvas id="myChart" ></canvas>
+</div>
+
+<script>
+var canvas = document.getElementById("myChart");
+var ctx = canvas.getContext("2d");
+
+var parent = document.getElementById('parent');
+
+canvas.width = parent.offsetWidth;
+canvas.height = parent.offsetHeight;
+
+var chart = new Chart(ctx, {
+  type: 'line',
+  options: {
+
+
+    zoom: {
+        // Boolean to enable zooming
+        enabled: true,
+
+        // Zooming directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow zooming in the y direction
+        mode: 'xy',
+    },
+    pan: {
+        // Boolean to enable panning
+        enabled: true,
+
+        // Panning directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow panning in the y direction
+        mode: 'xy'
+    },
+
+		 scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom'
+            }]
+        },
+    responsive: true,
+    maintainAspectRatio: false
+  },
+  data: {
+    datasets: [
+      {
+        label: '{{data.name}}',
+		data: {{data.data|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,192,192,0.4)",
+		borderColor: "rgba(75,192,192,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,192,192,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+      {
+        label: '{{calibration.name|safe}}',
+        data: {{calibration.data|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(175,12,12,0.4)",
+		borderColor: "rgba(175,12,12,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(175,12,12,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,12,12,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+    ]
+  }
+});
+</script>
+    
+      {% endif %}
+    </div>
+  </body>
