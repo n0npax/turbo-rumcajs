@@ -1,10 +1,8 @@
-1. Remove duplicated entries from uploaded files
 2. refactor jinja templates
 3. prepare stuff for settings
-4. draw basic chart
 6. Alghoritms
 7. Histogram
-8. redis/rabbit
+8. rabbit
 9. Users
 10. tests
 11. react/angular/bootstrap

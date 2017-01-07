@@ -19,20 +19,34 @@
 
       {% if data %}
 
+<div>
+    {{data.x_prefix}} {{data.y_prefix}}
+    <hr>
+    {{calibration.x_prefix}} {{calibration.y_prefix}}
+</div>
 <div id="parent">
-<canvas id="myChart" ></canvas>
+<canvas id="myChart_1" ></canvas>
+</div>
+<hr>
+<div id="parent">
+<canvas id="myChart_2" ></canvas>
 </div>
 
+
+
 <script>
-var canvas = document.getElementById("myChart");
-var ctx = canvas.getContext("2d");
+var canvas1 = document.getElementById("myChart_1");
+var ctx1 = canvas1.getContext("2d");
 
-var parent = document.getElementById('parent');
+var canvas2 = document.getElementById("myChart_2");
+var ctx2 = canvas2.getContext("2d");
 
-canvas.width = parent.offsetWidth;
-canvas.height = parent.offsetHeight;
 
-var chart = new Chart(ctx, {
+//var parent = document.getElementById('parent');
+//canvas.width = parent.offsetWidth;
+//canvas.height = parent.offsetHeight;
+
+var chart = new Chart(ctx1, {
   type: 'line',
   options: {
 
@@ -86,6 +100,76 @@ var chart = new Chart(ctx, {
 		pointRadius: 1,
 		pointHitRadius: 10
 	},
+
+      {
+        label: '{{data.name|safe}} smooth',
+        data: {{data.smooth_data|safe}},
+		fill: false,
+        hidden: true,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,212,12,0.4)",
+		borderColor: "rgba(75,212,12,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,212,12,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,212,12,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+
+
+      {
+        label: '{{data.name|safe}} derivative',
+        data: {{data.derivative|safe}},
+		fill: false,
+        hidden: true,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,212,12,0.4)",
+		borderColor: "rgba(75,212,12,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,212,12,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,212,12,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+
+      {
+        label: '{{data.name|safe}} c_point',
+        data: {{data.c_point|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(128,0,128,0.4)",
+		borderColor: "rgba(128,0,128,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(128,0,128,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(128,0,128,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+
       {
         label: '{{calibration.name|safe}}',
         data: {{calibration.data|safe}},
@@ -101,7 +185,7 @@ var chart = new Chart(ctx, {
 		pointBackgroundColor: "#fff",
 		pointBorderWidth: 1,
 		pointHoverRadius: 5,
-		pointHoverBackgroundColor: "rgba(75,12,12,1)",
+		pointHoverBackgroundColor: "rgba(175,12,12,1)",
 		pointHoverBorderColor: "rgba(220,220,220,1)",
 		pointHoverBorderWidth: 2,
 		pointRadius: 1,
@@ -110,6 +194,94 @@ var chart = new Chart(ctx, {
     ]
   }
 });
+
+
+
+////////////
+
+var chart = new Chart(ctx2, {
+  type: 'line',
+  options: {
+
+
+    zoom: {
+        // Boolean to enable zooming
+        enabled: true,
+
+        // Zooming directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow zooming in the y direction
+        mode: 'xy',
+    },
+    pan: {
+        // Boolean to enable panning
+        enabled: true,
+
+        // Panning directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow panning in the y direction
+        mode: 'xy'
+    },
+
+		 scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom'
+            }]
+        },
+    responsive: true,
+    maintainAspectRatio: false
+  },
+  data: {
+    datasets: [
+      {
+        label: '{{calibration.name}}',
+		data: {{calibration.calibrated|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,192,192,0.4)",
+		borderColor: "rgba(75,192,192,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,192,192,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+
+      {
+        label: '{{data.name|safe}}',
+        data: {{data.calibrated|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,212,12,0.4)",
+		borderColor: "rgba(75,212,12,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,212,12,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,212,12,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
+
+
+    ]
+  }
+});
+
+
 </script>
     
       {% endif %}

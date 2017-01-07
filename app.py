@@ -8,6 +8,10 @@ import json
 from app_celery import make_celery
 from werkzeug import secure_filename
 from flask_redis import FlaskRedis
+
+from lib.py3rumcajs.algorithms.common import calibrate
+
+from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
 from lib.py3rumcajs.app_config.app_config import AppConfig
 # cross dependency fo AppConfig instance (singleton)
 AppConfig.initialize(__name__)
@@ -19,7 +23,6 @@ from lib.py3rumcajs.models.datasample import (SampleTypeSettings,
                                               SampleType,
                                               Sample,
                                               )
-from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
 from flask import (render_template,
                    request,
                    redirect,
@@ -142,6 +145,7 @@ def graph(filename):
             calibration = json.loads(redis_store.get('Calibration.txt')
                                      .decode('utf-8'))
             data = json.loads(redis_store.get(filename).decode('utf-8'))
+            data = calibrate(data)
         return render_template('graph.html', data=data, filenames=filenames,
                                 calibration=calibration)
 
