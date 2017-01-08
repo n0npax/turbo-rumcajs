@@ -72,15 +72,39 @@ def parse_to_dict(filename):
             x_prefix = match.group(2)
             y_prefix = match.group(1)
 
+    data = rescale_data(data, x_prefix, y_prefix)
+
     return {'name': filename.split('/')[-1],
-            'x_prefix': x_prefix,
-            'y_prefix': y_prefix,
+            'x_prefix': 'Meter',
+            'y_prefix': 'Newton',
             'data': data}
 
 
-def rescale_data(data, prefix):
-    # TODO
-    return data
+def get_prefix(prefix):
+    if prefix == 'N' or prefix == 'm':
+        return 1
+    elif prefix.lower().startswith('mili'):
+        return 10**-3
+    elif prefix.lower().startswith('micro') or \
+            prefix.lower().startswith('mikro'):
+        return 10**-6
+    elif prefix.lower().startswith('nano'):
+        return 10**-9
+    elif prefix.lower().startswith('piko'):
+        return 10**-12
+    elif prefix.lower().startswith('?'):  # TODO mikro ??
+        return 10**-6
+    elif prefix.lower().startswith('n'):
+        return 10**-9
+
+    raise Exception('can\'t determine how to rescale - prefix: {}'
+                    .format(prefix))
+
+
+def rescale_data(data, prefix_x, prefix_y):
+    x_scale = get_prefix(prefix_x)
+    y_scale = get_prefix(prefix_y)
+    return [{'x': _['x'] * x_scale, 'y': _['y'] * y_scale} for _ in data]
 
 
 def cut_half_if_need(data):

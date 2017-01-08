@@ -2,10 +2,11 @@ import scipy.signal
 import numpy
 import copy
 
+from scipy.spatial import distance
 from scipy.stats import linregress
 
 
-def smooth(data, window=7, key='data', dest_key='data'):
+def smooth(data, window=17, key='data', dest_key='data'):
     if dest_key not in data:
         data[dest_key] = copy.deepcopy(data[key])
     y_vals = [point['y'] for point in data[key]]
@@ -68,6 +69,11 @@ def calibrate(data):
 
         index -= step
 
+    # 3rd c_point
+    #for i in range(-30, 30):
+    #    pass
+    #    Fir by linreg
+
     # save c_point
     data['c_point'] = [{'x': x_vals[index], 'y': y_vals[index]},
                        {'x': x_vals[index], 'y': min(y_vals)},
@@ -75,7 +81,8 @@ def calibrate(data):
     data['c_point_index'] = index
 
     shift_data_to_00(data)
-    cut_to_c_point(data, 'data', 'calibrated')
+    cut_to_c_point(data, 'smooth_data', 'calibrated')
+
     return data
 
 
@@ -100,7 +107,6 @@ def shift_data_to_00(data):
 def remove_edge_duplicated_points(data):
     beg_index, end_index = 0, -1
     y_vals = [point['y'] for point in data['data']]
-    print(y_vals[10:])
     for i in range(len(y_vals)):
         if y_vals[i] == y_vals[i+1]:
             continue
@@ -133,3 +139,41 @@ def derivative(data):
         slope, intercept, _, _, _ = linregress(x, y)
         data['derivative'] += [{'x': x_vals[i], 'y': slope}]
     smooth(data, key='derivative', dest_key='derivative')
+
+
+def compute_deltas(d_data, c_data):
+    d_y_vals = [point['y'] for point in d_data['calibrated']]
+    c_y_vals = [point['y'] for point in c_data['calibrated']]
+
+    max_y_lvl = max(max(d_y_vals), max(c_y_vals))
+
+    if max(c_y_vals) == max_y_lvl:
+        data1 = d_data  # data1 shorter data set
+        data2 = c_data  # data2 longer data set
+    else:
+        data1 = c_data
+        data2 = d_data
+    numpy_points2 = numpy.array([[point['x'], point['y']]
+                                for point in data2['calibrated']])
+
+    dict_points1 = data1['smooth_data']
+    dict_points2 = data2['smooth_data']
+
+    for i, point_dict in enumerate(dict_points1):
+        point = (point_dict['x'], point_dict['y'])
+        n = get_nearest_point(point, numpy_points2)
+        n_index = dict_points2.index({'x':n[0],'y':n[1]})
+        try:
+            # TODO FIX
+            x,y=[],[]
+            slope, intercept, _, _, _ = linreg(x,y)
+        # +1 -1 linreg i weź slope with inrercept
+
+        print(n, point, n_index)
+
+
+
+def get_nearest_point(point, points):
+    return points[distance.cdist([point], points).argmin()]
+
+

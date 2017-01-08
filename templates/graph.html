@@ -31,6 +31,10 @@
 <div id="parent">
 <canvas id="myChart_2" ></canvas>
 </div>
+<div id="parent">
+<canvas id="myChart_3" ></canvas>
+</div>
+
 
 
 
@@ -40,6 +44,9 @@ var ctx1 = canvas1.getContext("2d");
 
 var canvas2 = document.getElementById("myChart_2");
 var ctx2 = canvas2.getContext("2d");
+
+var canvas3 = document.getElementById("myChart_3");
+var ctx3 = canvas3.getContext("2d");
 
 
 //var parent = document.getElementById('parent');
@@ -195,8 +202,6 @@ var chart = new Chart(ctx1, {
   }
 });
 
-
-
 ////////////
 
 var chart = new Chart(ctx2, {
@@ -276,6 +281,68 @@ var chart = new Chart(ctx2, {
 		pointHitRadius: 10
 	},
 
+
+    ]
+  }
+});
+
+
+////////////
+
+var chart = new Chart(ctx3, {
+  type: 'line',
+  options: {
+
+
+    zoom: {
+        // Boolean to enable zooming
+        enabled: true,
+
+        // Zooming directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow zooming in the y direction
+        mode: 'xy',
+    },
+    pan: {
+        // Boolean to enable panning
+        enabled: true,
+
+        // Panning directions. Remove the appropriate direction to disable 
+        // Eg. 'y' would only allow panning in the y direction
+        mode: 'xy'
+    },
+
+		 scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom'
+            }]
+        },
+    responsive: true,
+    maintainAspectRatio: false
+  },
+  data: {
+    datasets: [
+      {
+        label: '{{calibration.name}}',
+		data: {{calibration.calibrated|safe}},
+		fill: false,
+		lineTension: 0.1,
+		backgroundColor: "rgba(75,192,192,0.4)",
+		borderColor: "rgba(75,192,192,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBorderColor: "rgba(75,192,192,1)",
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10
+	},
 
     ]
   }

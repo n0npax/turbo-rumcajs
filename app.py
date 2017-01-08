@@ -9,7 +9,7 @@ from app_celery import make_celery
 from werkzeug import secure_filename
 from flask_redis import FlaskRedis
 
-from lib.py3rumcajs.algorithms.common import calibrate
+from lib.py3rumcajs.algorithms.common import calibrate, compute_deltas
 
 from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
 from lib.py3rumcajs.app_config.app_config import AppConfig
@@ -146,6 +146,7 @@ def graph(filename):
                                      .decode('utf-8'))
             data = json.loads(redis_store.get(filename).decode('utf-8'))
             data = calibrate(data)
+            compute_deltas(data, calibration)
         return render_template('graph.html', data=data, filenames=filenames,
                                 calibration=calibration)
 
