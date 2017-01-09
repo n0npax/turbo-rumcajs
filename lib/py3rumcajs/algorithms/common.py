@@ -156,21 +156,25 @@ def compute_deltas(d_data, c_data):
     numpy_points2 = numpy.array([[point['x'], point['y']]
                                 for point in data2['calibrated']])
 
-    dict_points1 = data1['smooth_data']
-    dict_points2 = data2['smooth_data']
+    dict_points1 = data1['calibrated']
+    dict_points2 = data2['calibrated']
 
+    deltas = []
     for i, point_dict in enumerate(dict_points1):
         point = (point_dict['x'], point_dict['y'])
         n = get_nearest_point(point, numpy_points2)
         n_index = dict_points2.index({'x':n[0],'y':n[1]})
         try:
             # TODO FIX
-            x,y=[],[]
-            slope, intercept, _, _, _ = linreg(x,y)
-        # +1 -1 linreg i weź slope with inrercept
-
-        print(n, point, n_index)
-
+            d_p = dict_points2[n_index-1:n_index+1]
+            x ,y = [ _['x'] for _ in d_p],[_['y'] for _ in d_p]
+            slope, intercept, _, _, _ = linregress(x,y)
+            y = slope * point_dict['x'] + intercept
+            delta = abs(point_dict['y'] - y)
+            deltas.append({'x' : point_dict['y'], 'y': delta})
+        except Exception as e:
+            print(e,x,y)
+    d_data['calibration_deltas'] = deltas
 
 
 def get_nearest_point(point, points):
