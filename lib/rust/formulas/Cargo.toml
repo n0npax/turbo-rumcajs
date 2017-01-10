@@ -1,0 +1,15 @@
+[package]
+name = "formulas"
+version = "0.1.0"
+authors = ["n0npax <marcin@niemira.net>"]
+
+[lib]
+name = "formulas"
+crate-type = ["cdylib"]
+
+[dependencies.cpython]
+git = "https://github.com/dgrunwald/rust-cpython.git"
+features = ["extension-module"]
+
+[dependencies]
+
