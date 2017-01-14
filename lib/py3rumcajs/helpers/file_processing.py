@@ -1,17 +1,20 @@
 import re
 from orderedset import OrderedSet
+from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
 
 headers = ['# TEXT EXPORT', 'X Unit:', 'point']
 
 
 def validate_file(file):
-    return validate_extension(file) and validate_by_1stline(file)
+    if validate_extension(file) and validate_by_1stline(file):
+        return True
+    raise SampleValidationException('file is not valid')
 
 
 def validate_extension(file):
     filename = file.filename
     if '.' in filename:
-        return filename.rsplit('.', 1)[1] in ['txt', 'dat', 'data']
+        return filename.split('.')[-1] in ['txt', 'dat', 'data']
     else:
         return True
 
@@ -20,8 +23,9 @@ def validate_by_1stline(file):
     content = repr(file.read())
     file.seek(0, 0)
     for header in headers:
-        if content.startswith(header, 1):
-            return True
+        for shift in [0, 1, 2]:
+            if content.startswith(header, shift):
+                return True
     return False
 
 

@@ -180,4 +180,3 @@ def compute_deltas(d_data, c_data):
 def get_nearest_point(point, points):
     return points[distance.cdist([point], points).argmin()]
 
-

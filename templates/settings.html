@@ -1,0 +1,12 @@
+{% include 'flashes.html' %}
+<div>
+    <form action="/settings/" method="post">
+    {% for field in form %}
+    <ul>
+        <li>{{ field.label }}
+        {{ field }}</li>
+    </ul>
+    {% endfor %}
+    <input type="submit" value="save" class="span2">
+    </form>
+</div>

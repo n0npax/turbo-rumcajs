@@ -19,10 +19,10 @@ AppConfig.initialize(__name__)
 from lib.py3rumcajs.helpers.file_processing import (validate_file,
                                                     rescale_data,
                                                     )
-from lib.py3rumcajs.models.datasample import (SampleTypeSettings,
-                                              SampleType,
-                                              Sample,
-                                              )
+from lib.py3rumcajs.models.samples_settings import (SamplesSettings,
+                                                    SamplesSettingsForm,
+                                                    )
+
 from flask import (render_template,
                    request,
                    redirect,
@@ -32,6 +32,9 @@ from flask import (render_template,
                    session,
                    jsonify,
                    )
+
+from flask_wtf import Form
+from wtforms.ext.appengine.db import model_form
 
 app_config = AppConfig.instance()
 app = app_config.app
@@ -44,17 +47,33 @@ db = app_config.db
 
 from tasks import process_files, process_file
 
-@app.route('/show/')
-def show():
-    return render_template('show_settings.html', items=SampleTypeSettings
-                           .query.all())
+from wtforms.ext.sqlalchemy.orm import model_form
+
+
+@app.route('/settings/', methods = ['GET', 'POST'])
+def settings():
+    obj = SamplesSettings.query.first()
+    if not obj:
+        obj = SamplesSettings()
+    if request.method == 'POST':
+        form = SamplesSettingsForm(request.form)
+        if form.validate():
+            form.populate_obj(obj)
+            db.session.merge(obj)
+            flash('settings updated')
+            db.session.commit()
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text, error))
+    form = SamplesSettingsForm(obj=obj)
+    return render_template('settings.html', form=form)
 
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
-
 
 
 @app.route('/upload/', methods=['POST', 'GET', 'DELETE'])
