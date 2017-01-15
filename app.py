@@ -22,6 +22,8 @@ from lib.py3rumcajs.helpers.file_processing import (validate_file,
 from lib.py3rumcajs.models.samples_settings import (SamplesSettings,
                                                     SamplesSettingsForm,
                                                     )
+from lib.py3rumcajs.models.users import User
+from flask_mail import Mail
 
 from flask import (render_template,
                    request,
@@ -32,6 +34,12 @@ from flask import (render_template,
                    session,
                    jsonify,
                    )
+
+from flask_user import (login_required,
+                        LoginManager,
+                        UserManager,
+                        SQLAlchemyAdapter,
+                        )
 
 from flask_wtf import Form
 from wtforms.ext.appengine.db import model_form
@@ -44,13 +52,39 @@ celery = make_celery(app)
 redis_store = FlaskRedis(app)
 db = app_config.db
 
+# Flask-User
+db_adapter = SQLAlchemyAdapter(db, User)
+user_manager = UserManager(db_adapter, app)
+mail = Mail(app)
+
+login_manager = LoginManager()
 
 from tasks import process_files, process_file
 
 from wtforms.ext.sqlalchemy.orm import model_form
 
 
-@app.route('/settings/', methods = ['GET', 'POST'])
+def get_upload_dir():
+    return app.config['UPLOAD_FOLDER'] + get_user_name() + '/'
+
+
+@login_required
+def get_user_name():
+    if 'user_id' in session:
+        id = session['user_id']
+        return User.query.filter_by(id=id).first().username
+    raise Exception('not authorized user')
+
+
+@login_required
+def get_user_id():
+    if 'user_id' in session:
+        return session['user_id']
+    raise Exception('not authorized user')
+
+
+@app.route('/settings/', methods=['GET', 'POST'])
+@login_required
 def settings():
     obj = SamplesSettings.query.first()
     if not obj:
@@ -60,6 +94,7 @@ def settings():
         if form.validate():
             form.populate_obj(obj)
             db.session.merge(obj)
+            obj.user_id = get_user_id()  # force user bind
             flash('settings updated')
             db.session.commit()
         for field, errors in form.errors.items():
@@ -71,19 +106,23 @@ def settings():
 
 
 @app.route('/uploads/<filename>')
+@login_required
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
+    return send_from_directory(get_upload_dir(),
                                filename)
 
 
 @app.route('/upload/', methods=['POST', 'GET', 'DELETE'])
+@login_required
 def upload():
-    upload_dir = app.config['UPLOAD_FOLDER']
+    upload_dir = get_upload_dir()
     uploaded_files = request.files.getlist("file[]")
     uploaded_calibration = request.files.getlist("calibration_file")
     if uploaded_calibration:
         uploaded_calibration[0].filename = 'Calibration.txt'
         uploaded_files.append(uploaded_calibration[0])
+    if not os.path.isdir(upload_dir):
+        os.mkdir(upload_dir)
     filenames = os.listdir(upload_dir)
     if request.method == 'DELETE':
         shutil.rmtree(upload_dir)
@@ -103,12 +142,14 @@ def upload():
             flash(exception)
     return render_template('uploaded.html', filenames=set(filenames),
                            can_process=True)
-    # TODO
+    # TODO can_process is HARDCODED
 
-@app.route('/process/', methods=['POST','GET'])
+
+@app.route('/process/', methods=['POST', 'GET'])
+@login_required
 def process():
     if request.method == 'POST':
-        upload_dir = app.config['UPLOAD_FOLDER']
+        upload_dir = get_upload_dir()
         filenames = os.listdir(upload_dir)
         # mock celery for debug
         for filename in filenames:
@@ -119,12 +160,13 @@ def process():
 
         task = process_files.delay(upload_dir, filenames)
         return jsonify({}), 202, {'Location': url_for('taskstatus',
-                                                  task_id=task.id)}
+                                  task_id=task.id)}
     if request.method == 'GET':
         return render_template('process.html')
 
 
 @app.route('/status/<task_id>')
+@login_required
 def taskstatus(task_id):
     task = process_files.AsyncResult(task_id)
     if task.state == 'PENDING':
@@ -157,6 +199,7 @@ def taskstatus(task_id):
 
 @app.route('/graph/', defaults={'filename': None})
 @app.route('/graph/<filename>')
+@login_required
 def graph(filename):
         filenames = json.loads(redis_store.get('filenames').decode('utf-8'))
         data, calibration = {}, {}
@@ -167,9 +210,8 @@ def graph(filename):
             data = calibrate(data)
             compute_deltas(data, calibration)
         return render_template('graph.html', data=data, filenames=filenames,
-                                calibration=calibration)
+                               calibration=calibration)
 
 
 if __name__ == '__main__':
     app.run()
-

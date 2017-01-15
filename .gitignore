@@ -1,3 +1,4 @@
+setup_secret_env.sh
 .idea
 .cache/*
 uploads/*

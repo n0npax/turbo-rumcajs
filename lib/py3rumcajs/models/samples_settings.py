@@ -1,5 +1,6 @@
 from wtforms_alchemy import ModelForm
 from lib.py3rumcajs.app_config.app_config import AppConfig
+from lib.py3rumcajs.models.users import User
 
 app_config = AppConfig.instance()
 db = app_config.db
@@ -17,6 +18,10 @@ class SamplesSettings(db.Model):
     mi = db.Column(db.Float(), nullable=False)
     k = db.Column(db.Float(), nullable=False)
     alpha = db.Column(db.Float(), nullable=False, default=25)
+
+    # user relation
+    user_id = db.Column(db.Integer, db.ForeignKey('flask_user.id'))
+    user = db.relationship("User")
 
 
 class SamplesSettingsForm(ModelForm):
