@@ -9,7 +9,10 @@ from app_celery import make_celery
 from werkzeug import secure_filename
 from flask_redis import FlaskRedis
 
-from lib.py3rumcajs.algorithms.common import calibrate, compute_deltas
+from lib.py3rumcajs.algorithms.common import (calibrate,
+                                             compute_deltas,
+                                             )
+from lib.py3rumcajs.algorithms.elasticity import compute_elasticity
 
 from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
 from lib.py3rumcajs.app_config.app_config import AppConfig
@@ -93,8 +96,8 @@ def settings():
         form = SamplesSettingsForm(request.form)
         if form.validate():
             form.populate_obj(obj)
-            db.session.merge(obj)
             obj.user_id = get_user_id()  # force user bind
+            db.session.merge(obj)
             flash('settings updated')
             db.session.commit()
         for field, errors in form.errors.items():
@@ -209,6 +212,9 @@ def graph(filename):
             data = json.loads(redis_store.get(filename).decode('utf-8'))
             data = calibrate(data)
             compute_deltas(data, calibration)
+            settings = SamplesSettings.query \
+                .filter_by(user_id=get_user_id()).first()
+            compute_elasticity(data, settings)
         return render_template('graph.html', data=data, filenames=filenames,
                                calibration=calibration)
 

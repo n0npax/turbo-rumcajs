@@ -15,12 +15,13 @@ class SamplesSettings(db.Model):
     prefix_y = db.Column(db.String(), nullable=False)
     solution_at_x = db.Column(db.Float(), nullable=False)
     solution_at_y = db.Column(db.Float(), nullable=False)
-    mi = db.Column(db.Float(), nullable=False)
-    k = db.Column(db.Float(), nullable=False)
+    mi_k = db.Column(db.Float(), nullable=False)
     alpha = db.Column(db.Float(), nullable=False, default=25)
+    r = db.Column(db.Float(), nullable=False)
 
     # user relation
-    user_id = db.Column(db.Integer, db.ForeignKey('flask_user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('flask_user.id'),
+                        nullable=False)
     user = db.relationship("User")
 
 
