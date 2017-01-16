@@ -4,4 +4,7 @@
 8. rabbit
 10. tests
 11. react/angular/bootstrap
-
+12. 3rd elasticity model
+13. max/min for graph
+14. switch to celery for all
+15. redis keys per user
