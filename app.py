@@ -154,14 +154,17 @@ def process():
     if request.method == 'POST':
         upload_dir = get_upload_dir()
         filenames = os.listdir(upload_dir)
+        settings = SamplesSettings.query \
+            .filter_by(user_id=get_user_id()).first()
+
         # mock celery for debug
         for filename in filenames:
-            data = process_file(upload_dir, filename)
+            data = process_file(upload_dir, filename, settings)
             redis_store.set(filename, json.dumps(data))
             redis_store.set('filenames', json.dumps(filenames))
         # mock end
 
-        task = process_files.delay(upload_dir, filenames)
+        task = process_files.delay(upload_dir, filenames, settings)
         return jsonify({}), 202, {'Location': url_for('taskstatus',
                                   task_id=task.id)}
     if request.method == 'GET':

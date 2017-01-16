@@ -29,7 +29,7 @@ def validate_by_1stline(file):
     return False
 
 
-def parse_to_dict(filename):
+def parse_to_dict(filename, settings):
     with open(filename, 'r') as f:
         content = f.read()
         num_start = re.search(r'^\d.*', content, re.M)
@@ -76,8 +76,9 @@ def parse_to_dict(filename):
             x_prefix = match.group(2)
             y_prefix = match.group(1)
 
-    data = rescale_data(data, x_prefix, y_prefix)
-
+    data = rescale_data(data, x_prefix, y_prefix, settings)
+    x_prefix = settings.prefix_x  # after rescale set user defined prefix
+    y_prefix = settings.prefix_y
     return {'name': filename.split('/')[-1],
             'x_prefix': 'Meter',
             'y_prefix': 'Newton',
@@ -85,7 +86,9 @@ def parse_to_dict(filename):
 
 
 def get_prefix(prefix):
-    if prefix == 'N' or prefix == 'm':
+    prefix = prefix.lower().strip()
+    if prefix == 'n' or prefix == 'm' or \
+       prefix == 'meter' or prefix == 'newton':
         return 1
     elif prefix.lower().startswith('mili'):
         return 10**-3
@@ -105,9 +108,9 @@ def get_prefix(prefix):
                     .format(prefix))
 
 
-def rescale_data(data, prefix_x, prefix_y):
-    x_scale = get_prefix(prefix_x)
-    y_scale = get_prefix(prefix_y)
+def rescale_data(data, prefix_x, prefix_y, settings):
+    x_scale = get_prefix(prefix_x) / get_prefix(settings.prefix_x)
+    y_scale = get_prefix(prefix_y) / get_prefix(settings.prefix_y)
     return [{'x': _['x'] * x_scale, 'y': _['y'] * y_scale} for _ in data]
 
 

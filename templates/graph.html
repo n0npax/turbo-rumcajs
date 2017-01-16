@@ -2,10 +2,11 @@
     <meta charset="utf-8" />
    <script src='/static/js/chart.js/dist/Chart.js'></script>
    <script src='/static/js/chartjs-plugin-zoom/chartjs-plugin-zoom.js'></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <script src='/static/js/Chart.js-RangeSlider/dist/RangeSlider-solo.min.js'> </script>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
   <body>
@@ -66,6 +67,9 @@ var ctx3 = canvas3.getContext("2d");
 
 var canvas4 = document.getElementById("myChart_4");
 var ctx4 = canvas4.getContext("2d");
+
+
+
 
 //var parent = document.getElementById('parent');
 //canvas.width = parent.offsetWidth;
@@ -445,7 +449,6 @@ var chart = new Chart(ctx4, {
 		pointRadius: 1,
 		pointHitRadius: 10
 	},
-
 
     ]
   }
