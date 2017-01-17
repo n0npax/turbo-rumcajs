@@ -1,10 +1,11 @@
-2. refactor jinja templates
 6. Alghoritms
 7. Histogram
 8. rabbit
 10. tests
-11. react/angular/bootstrap
+11. react/angular ?
 12. 3rd elasticity model
 13. max/min for graph
 14. switch to celery for all
 15. redis keys per user
+16. Makefile should be able to run all
+17. better progressbar + better prefix show in graph section

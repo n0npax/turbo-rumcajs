@@ -4,54 +4,46 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MyApp</title>
-
+    <title>Turbo Rumcajs</title>
+    {% block head %}
+    {% endblock %}
     <!-- Bootstrap -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- In-lining styles to avoid needing a separate .css file -->
-    <style>
-        hr { border-color: #cccccc; margin: 0; }
-        .no-margins { margin: 0px; }
-        .with-margins { margin: 10px; }
-        .col-centered { float: none; margin: 0 auto; }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" >
   </head>
-
 
 <body>
     {% block body %}
-    <div id="header-div" class="clearfix with-margins">
-        <div class="pull-left"><a href="/"><h1 class="no-margins">Turbo Rumcajs</h1></a></div>
-        <div class="pull-right">
-            {% if call_or_get(current_user.is_authenticated) %}
-                <a href="{{ url_for('user.profile') }}">{{ current_user.username }}</a>
-                &nbsp; | &nbsp;
-                <a href="{{ url_for('user.logout') }}">Sign out</a>
-            {% else %}
-                <a href="{{ url_for('user.login') }}">Sign in</a>
-            {% endif %}
-        </div>
+    <div id="header-div" class="clearfix with-margins page-header">
+        <div class="pull-left"><a href="#"><h1 class="no-margins">Turbo Rumcajs</h1></a></div>
     </div>
     {% block menu %}
-    <div id="menu-div" class="with-margins">
-        <a href="/">Home</a>
+
+	<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+		<a class="navbar-brand" href="#">Turbo Rumcajs</a>
+		</div>
+		<ul class="nav navbar-nav">
+		<li><a href="{{ url_for('settings') }}">Settings</a></li>
+		<li><a href="{{ url_for('upload') }}">Upload</a></li>
+		<li><a href="{{ url_for('process') }}">Process</a></li>
+		<li><a href="{{ url_for('graph') }}">Graph</a></li>
         {% if call_or_get(current_user.is_authenticated) %}
-            &nbsp; | &nbsp; <a href="{{ url_for('user.profile') }}">User profile</a>
+        <li> <a href="{{ url_for('user.logout') }}">Sign out</a></li>
+        <li> <a href="{{ url_for('user.profile') }}">User profile</a> </li>
+        {% else %}
+        <li> <a href="{{ url_for('user.login') }}">Sign in</a></li>
         {% endif %}
-    </div>
+
+		</ul>
+	</div>
+	</nav>
     {% endblock %}
-    <hr class="no-margins"/>
 
     <div id="main-div" class="with-margins">
-    {# One-time system messages called Flash messages #}
     {% block flash_messages %}
         {%- with messages = get_flashed_messages(with_categories=true) -%}
             {% if messages %}
@@ -65,21 +57,34 @@
         {%- endwith %}
     {% endblock %}
 
-    {% block main %}{% block content %}{% endblock %}{% endblock %}
+    {% block main %}
+
+    <div class="navbar-fixed-left">
+		{% block column %}
+		{% endblock %}
     </div>
 
-    <br/>
+	<div class="container">
+		{% block content %}
+    	{% endblock %}
+	</div>
+	{% endblock %}
+    </div>
+
+    <footer class="footer>
     <hr class="no-margins"/>
     <div id="footer-div" class="clearfix with-margins">
-        <div class="pull-left">MyApp v1.0</div>
-        <div class="pull-right">&copy; 2014 MyCorp</div>
+        <div class="pull-left">Turbo Rumcajs </div>
+        <div class="pull-right">&copy; 2017 n0npax</div>
     </div>
     {% endblock %}
-
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Bootstrap -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  </body>
+    {% block bottom %}
+    {% endblock %}
+    </footer>
+    </body>
 </html>

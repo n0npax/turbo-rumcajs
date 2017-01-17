@@ -1,31 +1,28 @@
-<head>
-    <meta charset="utf-8" />
+{% extends "base.html" %}
+
+{% block head %}
    <script src='/static/js/chart.js/dist/Chart.js'></script>
    <script src='/static/js/chartjs-plugin-zoom/chartjs-plugin-zoom.js'></script>
    <script src='/static/js/Chart.js-RangeSlider/dist/RangeSlider-solo.min.js'> </script>
    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
 
-</head>
-  <body>
-    <div class="container">
-      <div class="header">
-          {% include 'flashes.html' %}
-        <h3 class="text-muted">Graph</h3>
-      </div>
-      <div>
-        {% for file in filenames %}                                                          
-        <li><a href="{{url_for('graph', filename=file)}}">{{file}}</a></li>                           
+
+{% block column %}
+      <div class="list-group">
+        {% for file in filenames %}
+        <li><a href="{{url_for('graph', filename=file)}}">{{file}}</a></li>
         {% endfor %}
       </div>
+{% endblock %}
 
+
+{% block content %}
       {% if data %}
 
 <div>
+    #TODO replace with sth better than that
     prefix data (x,y): {{data.x_prefix}} {{data.y_prefix}}
-    <hr>
     prefix cali (x,y): {{calibration.x_prefix}} {{calibration.y_prefix}}
 </div>
 
@@ -51,8 +48,6 @@
     <canvas id="myChart_4" ></canvas>
     </div>
 </div>
-{# //onload #}
-
 
 
 <script>
@@ -68,9 +63,6 @@ var ctx3 = canvas3.getContext("2d");
 var canvas4 = document.getElementById("myChart_4");
 var ctx4 = canvas4.getContext("2d");
 
-
-
-
 //var parent = document.getElementById('parent');
 //canvas.width = parent.offsetWidth;
 //canvas.height = parent.offsetHeight;
@@ -79,12 +71,11 @@ var chart = new Chart(ctx1, {
   type: 'line',
   options: {
 
-
     zoom: {
         // Boolean to enable zooming
         enabled: true,
 
-        // Zooming directions. Remove the appropriate direction to disable 
+        // Zooming directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow zooming in the y direction
         mode: 'xy',
     },
@@ -92,7 +83,7 @@ var chart = new Chart(ctx1, {
         // Boolean to enable panning
         enabled: true,
 
-        // Panning directions. Remove the appropriate direction to disable 
+        // Panning directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow panning in the y direction
         mode: 'xy'
     },
@@ -235,7 +226,7 @@ var chart = new Chart(ctx2, {
         // Boolean to enable zooming
         enabled: true,
 
-        // Zooming directions. Remove the appropriate direction to disable 
+        // Zooming directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow zooming in the y direction
         mode: 'xy',
     },
@@ -243,7 +234,7 @@ var chart = new Chart(ctx2, {
         // Boolean to enable panning
         enabled: true,
 
-        // Panning directions. Remove the appropriate direction to disable 
+        // Panning directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow panning in the y direction
         mode: 'xy'
     },
@@ -320,7 +311,7 @@ var chart = new Chart(ctx3, {
         // Boolean to enable zooming
         enabled: true,
 
-        // Zooming directions. Remove the appropriate direction to disable 
+        // Zooming directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow zooming in the y direction
         mode: 'xy',
     },
@@ -328,7 +319,7 @@ var chart = new Chart(ctx3, {
         // Boolean to enable panning
         enabled: true,
 
-        // Panning directions. Remove the appropriate direction to disable 
+        // Panning directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow panning in the y direction
         mode: 'xy'
     },
@@ -382,7 +373,7 @@ var chart = new Chart(ctx4, {
         // Boolean to enable zooming
         enabled: true,
 
-        // Zooming directions. Remove the appropriate direction to disable 
+        // Zooming directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow zooming in the y direction
         mode: 'xy',
     },
@@ -390,7 +381,7 @@ var chart = new Chart(ctx4, {
         // Boolean to enable panning
         enabled: true,
 
-        // Panning directions. Remove the appropriate direction to disable 
+        // Panning directions. Remove the appropriate direction to disable
         // Eg. 'y' would only allow panning in the y direction
         mode: 'xy'
     },
@@ -455,9 +446,7 @@ var chart = new Chart(ctx4, {
 });
 
 
-
 </script>
-    
-      {% endif %}
-    </div>
-  </body>
+{% endif %}
+
+{% endblock %}

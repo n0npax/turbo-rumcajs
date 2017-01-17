@@ -1,12 +1,14 @@
-{% include 'flashes.html' %}
+{% extends "base.html" %}
+{% block content %}
 <div>
-    <form action="/settings/" method="post">
+    <form action="/settings/" method="post" class="form-horizontal">
     {% for field in form %}
-    <ul>
-        <li>{{ field.label }}
-        {{ field }}</li>
-    </ul>
+      <div class="form-group">
+          <label class="control-label col-sm-2" for="email"> {{ field.label }} </label>
+        {{ field }}
+      </div>
     {% endfor %}
-    <input type="submit" value="save" class="span2">
+    <input type="submit" value="save" class="span2 btn btn-primary">
     </form>
 </div>
+{% endblock %}

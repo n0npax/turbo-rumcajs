@@ -1,26 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+{% extends "base.html" %}
+{% block head %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
           rel="stylesheet">
-  </head>
-  <body>
+{% endblock %}
+
+{% block content %}
     <div class="container">
       <div class="header">
-          {% include 'flashes.html' %}
         <h3 class="text-muted">Uploaded files</h3>
       </div>
       <div>
       This is a list of the files you just uploaded, click on them to load/download them
         {% include 'upload_files.html' %}
       </div>
-      <div>
-        {% include 'list_files.html' %}
-      </div>
-      <div>
-        {% include 'delete_button.html' %}
-      </div>
-    </div>
+   </div>
+{% endblock %}
 
-  </body>
-</html>
+{% block column %}
+    <div>
+    {% include 'list_files.html' %}
+    </div>
+    <div>
+    {% include 'delete_button.html' %}
+    </div>
+{% endblock %}
