@@ -1,0 +1,46 @@
+# To run app
+# 1st make celery
+# 2nd make run
+#
+# TODO fix variables duplication
+
+help:
+	@echo 'test   -> run tests'
+	@echo 'clean  -> clean project'
+	@echo 'run    -> run app (need to run celery in separate shell)'
+	@echo 'celery -> run celery'
+
+run:
+	APP_SETTINGS="config.DevelopmentConfig" \
+	FLASK_DEBUG=1 \
+	PY3RUMCAJS_DATABASE_URL='postgresql://rumcajs:turbo@localhost/rumcajs_db' \
+	USER_APP_NAME="Turbo Rumcajs" \
+	MAIL_USERNAME='robot@DOMAIN>STH' \
+	MAIL_PASSWORD='PASSWORD' \
+	MAIL_DEFAULT_SENDER='robot@DOMAIN>STH' \
+	MAIL_SERVER='ssl0.SOMEWHERE' \ # smtp.somewhere
+	MAIL_PORT='465' \
+	MAIL_USE_SSL='TRUE' \
+	./app.py
+
+celery:
+	APP_SETTINGS="config.DevelopmentConfig" \
+	FLASK_DEBUG=1 \
+	PY3RUMCAJS_DATABASE_URL='postgresql://rumcajs:turbo@localhost/rumcajs_db' \
+	USER_APP_NAME="Turbo Rumcajs" \
+	MAIL_USERNAME='robot@DOMAIN>STH' \
+	MAIL_PASSWORD='PASSWORD' \
+	MAIL_DEFAULT_SENDER='robot@DOMAIN>STH' \
+	MAIL_SERVER='ssl0.SOMEWHERE' \
+	MAIL_PORT='465' \
+	MAIL_USE_SSL='TRUE' \
+	celery -A app.celery worker  --loglevel=debug
+
+test:
+	pytest -vs
+
+clean:
+	find . -name .cache -type d | xargs rm -fr
+	find . -name .rope -type d | xargs rm -fr
+	find . -name *.pyc -delete -type f
+	find . -name __pycache__ -type d | xargs rm -fr
