@@ -3,7 +3,7 @@
 {% block head %}
    <script src='/static/js/chart.js/dist/Chart.js'></script>
    <script src='/static/js/chartjs-plugin-zoom/chartjs-plugin-zoom.js'></script>
-   <script src='/static/js/Chart.js-RangeSlider/dist/RangeSlider-solo.min.js'> </script>
+   <script src='/static/js/Chart.js-RangeSlider/dist/RangeSlider-minimal.min.js'> </script>
    <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 
@@ -33,24 +33,51 @@
   <li class="active"><a data-toggle="tab" href="#graph4">graph4</a></li>
 </ul>
 
-<div class="tab-content">
-    <div id="graph1" class="tab-pane fade" style=" height: 300px; width: 100%;">
-    <canvas id="myChart_1" ></canvas>
-    </div>
-    <hr>
-    <div id="graph2" class="tab-pane fade" style=" height: 300px; width: 100%;">
-    <canvas id="myChart_2" ></canvas>
-    </div>
-    <div id="graph3" class="tab-pane fade" style=" height: 300px; width: 100%;">
-    <canvas id="myChart_3" ></canvas>
-    </div>
-    <div id="graph4" class="tab-pane fade in active" style=" height: 300px; width: 100%;">
-    <canvas id="myChart_4" ></canvas>
-    </div>
-</div>
+<div class="row">
+	<div class="tab-content col-md-10">
+		<div id="graph1" class="tab-pane fade" style=" height: 300px; width: 100%;">
+		<canvas id="myChart_1" ></canvas>
+		</div>
+		<hr>
+		<div id="graph2" class="tab-pane fade" style=" height: 300px; width: 100%;">
+		<canvas id="myChart_2" ></canvas>
+		</div>
+		<div id="graph3" class="tab-pane fade" style=" height: 300px; width: 100%;">
+		<canvas id="myChart_3" ></canvas>
+		</div>
+		<div id="graph4" class="tab-pane fade in active" style=" height: 300px; width: 100%;">
+		<canvas id="myChart_4" ></canvas>
+		</div>
+	</div>
 
+	<div class="col-md-1">
+		<div class="range range-success">
+			<input id="slider_v" style="height: 300px;" type="range" name="range" min="0" step="5" onchange="update_max_value(this.value)" orient="vertical">
+		</div>
+	</div>
+
+	<div class="col-md-1">
+		<div class="range range-success">
+			<div class="row"> just for graph4 </div>
+			<div class="row"><output id="max_value"> </output></div>
+			</div>
+		</div>
+	</div>
 
 <script>
+
+var chart4_max = {{data.highest_elasticity.y}};
+document.getElementById("slider_v").value = chart4_max;
+document.getElementById("slider_v").max = chart4_max;
+document.getElementById("max_value").value = chart4_max;
+
+function update_max_value(newValue)
+{
+	document.getElementById("max_value").innerHTML=newValue;
+	chart4.options.scales.yAxes[0].ticks.max = parseInt(newValue);
+	chart4.update();
+}
+
 var canvas1 = document.getElementById("myChart_1");
 var ctx1 = canvas1.getContext("2d");
 
@@ -67,7 +94,7 @@ var ctx4 = canvas4.getContext("2d");
 //canvas.width = parent.offsetWidth;
 //canvas.height = parent.offsetHeight;
 
-var chart = new Chart(ctx1, {
+var chart1 = new Chart(ctx1, {
   type: 'line',
   options: {
 
@@ -217,7 +244,7 @@ var chart = new Chart(ctx1, {
 
 ////////////
 
-var chart = new Chart(ctx2, {
+var chart2 = new Chart(ctx2, {
   type: 'line',
   options: {
 
@@ -302,7 +329,7 @@ var chart = new Chart(ctx2, {
 
 ////////////
 
-var chart = new Chart(ctx3, {
+var chart3 = new Chart(ctx3, {
   type: 'line',
   options: {
 
@@ -364,10 +391,9 @@ var chart = new Chart(ctx3, {
 
 ////////////
 
-var chart = new Chart(ctx4, {
+var chart4 = new Chart(ctx4, {
   type: 'line',
   options: {
-
 
     zoom: {
         // Boolean to enable zooming
@@ -386,13 +412,19 @@ var chart = new Chart(ctx4, {
         mode: 'xy'
     },
 
-		 scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }]
-        },
-    responsive: true,
+		scales: {
+		xAxes: [{
+			type: 'linear',
+			position: 'bottom'
+		}],
+		yAxes: [{
+			ticks: {
+				min: 0,
+				max: chart4_max,
+			},
+		}]
+	},
+responsive: true,
     maintainAspectRatio: false
   },
   data: {

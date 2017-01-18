@@ -86,6 +86,11 @@ def get_user_id():
     raise Exception('not authorized user')
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 @app.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():
