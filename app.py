@@ -91,6 +91,13 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
+@app.route('/about/', methods=['GET'])
+def about():
+    with open('README', 'r') as f:
+        data = f.read()
+    return render_template('about.html', data=data)
+
+
 @app.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():

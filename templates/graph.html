@@ -20,12 +20,6 @@
 {% block content %}
       {% if data %}
 
-<div>
-    #TODO replace with sth better than that
-    prefix data (x,y): {{data.x_prefix}} {{data.y_prefix}}
-    prefix cali (x,y): {{calibration.x_prefix}} {{calibration.y_prefix}}
-</div>
-
 <ul class="nav nav-tabs">
   <li><a data-toggle="tab" href="#graph1">graph1</a></li>
   <li><a data-toggle="tab" href="#graph2">graph2</a></li>
@@ -58,11 +52,20 @@
 
 	<div class="col-md-1">
 		<div class="range range-success">
-			<div class="row"> just for graph4 </div>
+			<div class="row"> For all
+                <ul>
+                    <li>X: {{data.x_prefix}}</li>
+                    <li>Y: {{data.y_prefix}}</li>
+                </ul>
+                Just for graph4
+            </div>
 			<div class="row"><output id="max_value"> </output></div>
 			</div>
 		</div>
 	</div>
+</div>
+
+
 
 <script>
 

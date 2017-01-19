@@ -80,8 +80,8 @@ def parse_to_dict(filename, settings):
     x_prefix = settings.prefix_x  # after rescale set user defined prefix
     y_prefix = settings.prefix_y
     return {'name': filename.split('/')[-1],
-            'x_prefix': 'Meter',
-            'y_prefix': 'Newton',
+            'x_prefix': '{}meter'.format(x_prefix),
+            'y_prefix': '{}newton'.format(y_prefix),
             'data': data}
 
 

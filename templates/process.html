@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <button id="start-bg-job" class="btn btn-primary" >Start Long Calculation</button><br><br>
+    <button id="start-bg-job" class="btn btn-primary" >Process all uploaded files</button><br><br>
     <div id="progress"></div>
 
 
@@ -18,7 +18,7 @@
 
             // create a progress bar
             var nanobar = new Nanobar({
-                bg: '#44f',
+                bg: '#eee',
                 target: div[0].childNodes[0]
             });
 
@@ -57,7 +57,7 @@
                     // rerun in 2 seconds
                     setTimeout(function() {
                         update_progress(status_url, nanobar, status_div);
-                    }, 2000);
+                    }, 1000);
                 }
             });
         }
