@@ -14,6 +14,7 @@ class SamplesSettings(db.Model):
     __tablename__ = 'sample_settings'
 
     id = db.Column(db.Integer, primary_key=True)
+    need_process = db.Column(db.Boolean, default=True)
     name = db.Column(db.String(), nullable=False)
     prefix_x = db.Column(prefix_enum, nullable=False)
     prefix_y = db.Column(prefix_enum, nullable=False)
@@ -33,4 +34,4 @@ class SamplesSettingsForm(ModelForm):
     class Meta:
         model = SamplesSettings
         strip_string_fields = True
-        excluse = ['user_id']
+        exclude = ['need_process']

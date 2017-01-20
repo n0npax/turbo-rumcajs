@@ -50,11 +50,11 @@ def parse_to_dict(filename, settings):
                 elif numbers_len == 6:
                     numbers = (numbers[2], numbers[1])
                 else:
-                    raise Exception()  # TODO
+                    raise SampleValidationException()
                 data.append(numbers)
             except:
                 print(line, '<<<<<,')
-                break
+                raise
                 content_header.append(line)
         data = list(OrderedSet(data))
         data = [{'x': _[0], 'y': _[1]} for _ in data]
@@ -122,4 +122,3 @@ def cut_half_if_need(data):
         return data[:int(len(data)/2)]
     else:
         return data
-

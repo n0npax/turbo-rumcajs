@@ -10,8 +10,8 @@ from werkzeug import secure_filename
 from flask_redis import FlaskRedis
 
 from lib.py3rumcajs.algorithms.common import (calibrate,
-                                             compute_deltas,
-                                             )
+                                              compute_deltas,
+                                              )
 from lib.py3rumcajs.algorithms.elasticity import compute_elasticity
 
 from lib.py3rumcajs.exceptions.exceptions import SampleValidationException
@@ -23,8 +23,8 @@ from lib.py3rumcajs.helpers.file_processing import (validate_file,
                                                     rescale_data,
                                                     )
 from lib.py3rumcajs.models.samples_settings import (SamplesSettings,
-                                                    SamplesSettingsForm,
-                                                    )
+                                                     SamplesSettingsForm,
+                                                     )
 from lib.py3rumcajs.models.users import User
 from flask_mail import Mail
 
@@ -44,7 +44,6 @@ from flask_user import (login_required,
                         SQLAlchemyAdapter,
                         )
 
-from flask_wtf import Form
 from wtforms.ext.appengine.db import model_form
 
 app_config = AppConfig.instance()
@@ -109,6 +108,7 @@ def settings():
         if form.validate():
             form.populate_obj(obj)
             obj.user_id = get_user_id()  # force user bind
+            obj.need_process = True
             db.session.merge(obj)
             flash('settings updated')
             db.session.commit()
@@ -142,6 +142,9 @@ def upload():
     if request.method == 'DELETE':
         shutil.rmtree(upload_dir)
         os.mkdir(upload_dir)
+    if request._method == 'POST':
+        pass
+        # TODO set need_Process flag in settings as True
     for file in uploaded_files:
         try:
             validate_file(file)
@@ -155,9 +158,7 @@ def upload():
             pass
         except Exception as exception:
             flash(exception)
-    return render_template('uploaded.html', filenames=set(filenames),
-                           can_process=True)
-    # TODO can_process is HARDCODED
+    return render_template('uploaded.html', filenames=set(filenames))
 
 
 @app.route('/process/', methods=['POST', 'GET'])
