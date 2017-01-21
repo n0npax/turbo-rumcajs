@@ -70,6 +70,16 @@ def get_upload_dir():
     return app.config['UPLOAD_FOLDER'] + get_user_name() + '/'
 
 
+@app.context_processor
+def need_process():
+    try:
+        obj = SamplesSettings.query.filter_by(user_id=get_user_id()).first()
+        need_process = obj.need_process
+    except:  # TODO
+        need_process = False
+    return dict(need_process=need_process)
+
+
 @login_required
 def get_user_name():
     if 'user_id' in session:
@@ -100,7 +110,7 @@ def about():
 @app.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():
-    obj = SamplesSettings.query.first()
+    obj = SamplesSettings.query.filter_by(user_id=get_user_id()).first()
     if not obj:
         obj = SamplesSettings()
     if request.method == 'POST':
@@ -110,8 +120,9 @@ def settings():
             obj.user_id = get_user_id()  # force user bind
             obj.need_process = True
             db.session.merge(obj)
-            flash('settings updated')
             db.session.commit()
+            flash('need to process')
+            flash('settings updated')
         for field, errors in form.errors.items():
             for error in errors:
                 flash(u"Error in the %s field - %s" % (
@@ -142,9 +153,11 @@ def upload():
     if request.method == 'DELETE':
         shutil.rmtree(upload_dir)
         os.mkdir(upload_dir)
-    if request._method == 'POST':
-        pass
-        # TODO set need_Process flag in settings as True
+    if request.method == 'POST':
+        obj = SamplesSettings.query.filter_by(user_id=get_user_id()).first()
+        obj.need_process = True
+        db.session.commit()
+        flash('need to process')
     for file in uploaded_files:
         try:
             validate_file(file)
@@ -178,6 +191,9 @@ def process():
         # mock end
 
         task = process_files.delay(upload_dir, filenames, settings)
+        obj = SamplesSettings.query.filter_by(user_id=get_user_id()).first()
+        obj.need_process = False
+        db.session.commit()
         return jsonify({}), 202, {'Location': url_for('taskstatus',
                                   task_id=task.id)}
     if request.method == 'GET':

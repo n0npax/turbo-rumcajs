@@ -7,6 +7,10 @@ body {
     position: absolute;
 }
 
+.red_li {
+    background-color: #d9534f;
+}
+
 .navbar-fixed-left {
   width: 140px;
   position: fixed;

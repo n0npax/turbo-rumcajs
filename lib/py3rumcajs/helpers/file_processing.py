@@ -54,7 +54,7 @@ def parse_to_dict(filename, settings):
                 data.append(numbers)
             except:
                 print(line, '<<<<<,')
-                raise
+                break
                 content_header.append(line)
         data = list(OrderedSet(data))
         data = [{'x': _[0], 'y': _[1]} for _ in data]
@@ -97,7 +97,8 @@ def get_prefix(prefix):
         return 10**-6
     elif prefix.lower().startswith('nano'):
         return 10**-9
-    elif prefix.lower().startswith('piko'):
+    elif prefix.lower().startswith('piko') or \
+            prefix.lower().startswith('pico'):
         return 10**-12
     elif prefix.lower().startswith('?'):  # TODO mikro ??
         return 10**-6
